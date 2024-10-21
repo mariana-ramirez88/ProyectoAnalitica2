@@ -2,6 +2,7 @@ import streamlit as st
 import pickle
 import numpy as np
 import pandas as pd
+import os
 
 # Título de la aplicación
 st.title("🎈 Proyecto Analítica")
@@ -10,36 +11,21 @@ st.write("Por favor, contesta las siguientes preguntas para obtener una predicci
 # Ruta al archivo del modelo .pkl
 model_path = "modelo_random_forest_analiticaFinal.pkl"  # Replace with the correct path
 
-import os
-import pickle
-
-# Define the relative path to the model file
-model_path = "modelo_random_forest_analiticaFinal.pkl"
-
 # Check if the file exists
 if os.path.exists(model_path):
     try:
         with open(model_path, 'rb') as file:
             model = pickle.load(file)
-            print("Model loaded successfully!")
+            st.success("Modelo cargado exitosamente!")
     except Exception as e:
-        print(f"Error loading model: {e}")
+        st.error(f"Error al cargar el modelo: {e}")
 else:
-    print(f"File {model_path} does not exist!")
+    st.error(f"El archivo {model_path} no existe!")
 
-
-# Definir las columnas numéricas y categóricas
+# Definir las columnas numéricas
 num_cols = ['Activ_Econ', 'Ventas_Nacion19', 'Export_2019', 'Ventas_Nacion20',
             'Export_2020', 'Bienes_Ctes', 'Razon_No_Proy', 'Average_Cert_Employ19', 
             'Average_Cert_Employ20']
-
-cat_cols = ['Tipo', 'Bienes_Nuev_Emp', 'Bienes_Nuev_Nacion', 'Bienes_Nuev_Inter',
-            'Bienes_Mejor_Emp', 'Bienes_Mejor_Nacion', 'Bienes_Mejor_Inter',
-            'Metod_Nuev_Prod', 'Metod_Nuev_Emp', 'Tec_Comerce_Nuev',
-            'Metod_Nuev_Dist', 'Metod_Nuev_Info', 'Metod_Nuev_Conta',
-            'Ventas_NacionTotal', 'Proy_Bienes_Nuev', 'Abandono_Proy',
-            'Intencion_Proy', 'Cert_Quali_Process', 'Cert_Quali_Product',
-            'Reglamento']
 
 # Preguntas para los datos numéricos
 numerical_inputs = [
@@ -54,17 +40,32 @@ numerical_inputs = [
     ("Average_Cert_Employ20", "Empleados con certificaciones laborales en 2020", 0)
 ]
 
-# Preguntas para los datos categóricos
-categorical_inputs_restricted = {
-    "Bienes_Nuev_Emp": "¿Introdujo bienes nuevos al mercado? (Sí=1, No=2)",
-    "Bienes_Nuev_Nacion": "¿Introdujo bienes nuevos en el mercado nacional? (Sí=1, No=2)",
-    # Añadir más preguntas categóricas restringidas
+# Preguntas personalizadas para datos categóricos con restricciones de respuesta (Sí=1, No=2)
+categorical_questions_restricted = {
+    "Bienes_Nuev_Emp": "¿Introdujo su empresa bienes o servicios nuevos que ya existían en el mercado nacional o internacional, pero eran nuevos para la empresa durante el período 2019-2020? (Sí=1, No=2)",
+    "Bienes_Nuev_Nacion": "¿Introdujo su empresa bienes o servicios nuevos en el mercado nacional durante el período 2019-2020? (Sí=1, No=2)",
+    "Bienes_Nuev_Inter": "¿Introdujo su empresa bienes o servicios nuevos en el mercado internacional durante el período 2019-2020? (Sí=1, No=2)",
+    "Bienes_Mejor_Emp": "¿Introdujo su empresa mejoras a bienes o servicios que ya existían en el mercado, pero que fueron mejorados solo para la empresa? (Sí=1, No=2)",
+    "Bienes_Mejor_Nacion": "¿Introdujo su empresa mejoras a bienes o servicios en el mercado nacional durante el período 2019-2020? (Sí=1, No=2)",
+    "Bienes_Mejor_Inter": "¿Introdujo su empresa mejoras a bienes o servicios en el mercado internacional durante el período 2019-2020? (Sí=1, No=2)",
+    "Metod_Nuev_Prod": "¿Introdujo su empresa métodos nuevos o mejorados de producción de bienes o prestación de servicios durante el período 2019-2020? (Sí=1, No=2)",
+    "Metod_Nuev_Emp": "¿Implementó su empresa métodos organizativos nuevos o mejorados en su funcionamiento interno durante el período 2019-2020? (Sí=1, No=2)",
+    "Tec_Comerce_Nuev": "¿Introdujo su empresa técnicas de comercialización nuevas o mejoradas durante el período 2019-2020? (Sí=1, No=2)",
+    "Metod_Nuev_Dist": "¿Implementó su empresa métodos nuevos o mejorados de distribución, entrega o logística durante el período 2019-2020? (Sí=1, No=2)",
+    "Metod_Nuev_Info": "¿Introdujo su empresa métodos nuevos o mejorados de procesamiento de información o comunicación durante el período 2019-2020? (Sí=1, No=2)",
+    "Metod_Nuev_Conta": "¿Introdujo su empresa métodos nuevos o mejorados para la contabilidad u operaciones administrativas durante el período 2019-2020? (Sí=1, No=2)",
+    "Proy_Bienes_Nuev": "¿Tenía su empresa algún proyecto en marcha para introducir bienes o servicios nuevos o mejorados al finalizar 2020? (Sí=1, No=2)",
+    "Abandono_Proy": "¿Abandonó su empresa algún proyecto de innovación durante el período 2019-2020? (Sí=1, No=2)",
+    "Intencion_Proy": "¿Tuvo su empresa la intención de realizar algún proyecto de innovación durante el período 2019-2020? (Sí=1, No=2)",
+    "Cert_Quali_Process": "¿Obtuvo su empresa certificaciones de calidad de procesos durante el período 2019-2020? (Sí=1, No=2)",
+    "Cert_Quali_Product": "¿Obtuvo su empresa certificaciones de calidad de productos durante el período 2019-2020? (Sí=1, No=2)",
+    "Reglamento": "¿Estuvieron los bienes o servicios de su empresa sujetos a reglamentos técnicos durante el período 2019-2020? (Sí=1, No=2)"
 }
 
-# Preguntas categóricas sin restricciones
+# Definir preguntas categóricas sin restricciones
 categorical_inputs_unrestricted = {
-    "Tipo": "¿Cuál es la tipología de la empresa? (AMPLIA, NOINNO, POTENC, INTENC, ESTRIC)",
-    "Ventas_NacionTotal": "¿Porcentaje total de ventas nacionales de la empresa? (0 a 1)"
+    "Tipo": "Seleccione el tipo de empresa",
+    "Ventas_NacionTotal": "Porcentaje de ventas nacionales de bienes o servicios totales (0 a 1)"
 }
 
 # Función para obtener entradas numéricas
@@ -80,7 +81,7 @@ def get_numerical_input():
 # Función para obtener entradas categóricas restringidas (Sí=1, No=2)
 def get_categorical_input_restricted():
     data = {}
-    for col, question in categorical_inputs_restricted.items():
+    for col, question in categorical_questions_restricted.items():
         data[col] = st.selectbox(question, options=[1, 2])
     return data
 
@@ -105,6 +106,13 @@ input_df = pd.DataFrame([input_data])
 
 # Botón para hacer la predicción
 if st.button("Hacer Predicción"):
-    # Realizar la predicción
-    prediction = model.predict(input_df)
-    st.write(f"La predicción es: {prediction[0]}")
+    # Debugging: Check input_df before prediction
+    st.write("Estructura de input_df:")
+    st.write(input_df)
+
+    try:
+        # Realizar la predicción
+        prediction = model.predict(input_df)
+        st.write(f"La predicción es: {prediction[0]}")
+    except Exception as e:
+        st.error(f"Error durante la predicción: {e}")
