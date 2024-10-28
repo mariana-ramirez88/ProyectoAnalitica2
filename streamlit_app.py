@@ -3,9 +3,13 @@ import pickle
 import numpy as np
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
 
 # Título de la aplicación
-st.title("🎈 Proyecto Analítica")
+st.title("📈 Profit Pulse")
 st.write("Por favor, contesta las siguientes preguntas para obtener una predicción:")
 
 # Ruta al archivo del modelo .pkl
@@ -22,10 +26,15 @@ if os.path.exists(model_path):
 else:
     st.error(f"El archivo {model_path} no existe!")
 
+# Load training data
+data_path = os.path.join(os.path.dirname(__file__), 'BasedeDatosCorte2.xlsx')
+training_data = pd.read_excel(data_path)
+
 # Definir las columnas numéricas
 num_cols = ['Activ_Econ', 'Ventas_Nacion19', 'Export_2019', 'Ventas_Nacion20',
             'Export_2020', 'Bienes_Ctes', 'Razon_No_Proy', 'Average_Cert_Employ19', 
             'Average_Cert_Employ20']
+
 
 # Preguntas para los datos numéricos
 numerical_inputs = [
@@ -104,6 +113,10 @@ categorical_data_unrestricted = get_categorical_input_unrestricted()
 input_data = {**numerical_data, **categorical_data_restricted, **categorical_data_unrestricted}
 input_df = pd.DataFrame([input_data])
 
+if 'porcentaje_cambio' not in training_data.columns:
+    training_data['porcentaje_cambio'] = np.nan  # Add as NaN if not prese
+print(training_data['porcentaje_cambio'].dtype)
+
 # Botón para hacer la predicción
 if st.button("Hacer Predicción"):
     # Debugging: Check input_df before prediction
@@ -114,5 +127,96 @@ if st.button("Hacer Predicción"):
         # Realizar la predicción
         prediction = model.predict(input_df)
         st.write(f"La predicción es: {prediction[0]}")
+
+        # Plot `porcentaje_cambio` prediction vs. training data
+        if 'porcentaje_cambio' in training_data.columns:
+            fig, ax = plt.subplots()
+            sns.violinplot(x=training_data['porcentaje_cambio'], ax=ax, inner=None, color="skyblue")
+            
+            # Overlay the predicted value as a red point
+            ax.plot(prediction[0], 1, 'ro', label='Predicción (User Input)')
+            st.header('Comparación de Usuario vs Empresas que reportaron una variación positiva en ingresos')
+
+            ax.set_title("Comparación de variacion entre el usuario y la otras empresas")
+            ax.set_xlabel("porcentaje_cambio")
+            ax.legend()
+            
+            st.pyplot(fig)
+        else:
+            st.error("La columna 'porcentaje_cambio' no se encuentra en los datos de entrenamiento.")
     except Exception as e:
         st.error(f"Error durante la predicción: {e}")
+
+# Create comparison for important features
+st.header('Comparación con Otras Empresas')
+
+columns_to_compare = ['Ventas_Nacion19', 'Export_2019', 'Average_Cert_Employ19','Export_2020']
+
+# Plotting boxplot with user input as points
+st.header('Comparación de Usuario vs Distribución de la Base de Datos Original')
+
+# Iterate over each column to plot in a 2x2 layout
+for i, col_name in enumerate(columns_to_compare):
+    # Create a new row with 2 columns for every two plots
+    if i % 2 == 0:
+        col1, col2 = st.columns(2)
+    columns = [col1, col2]
+    
+    # Create the plot
+    fig, ax = plt.subplots()
+    
+    # Violin plot for the training data
+    sns.violinplot(x=training_data[col_name], ax=ax, inner=None, color="skyblue")
+    
+    # Overlay the user input as a red point
+    ax.plot(input_df[col_name], 1, 'ro', label='User Input')
+    ax.set_title(f'Comparación de {col_name}')
+    ax.set_xlabel(col_name)
+    ax.legend()
+    
+    # Display each plot in the current column
+    columns[i % 2].pyplot(fig)
+
+# Define categorical columns to compare
+categorical_columns_to_compare = ['Bienes_Mejor_Emp', 'Metod_Nuev_Emp', 'Metod_Nuev_Prod', 'Metod_Nuev_Info', 'Metod_Nuev_Dist', 'Tec_Comerce_Nuev']
+
+# Filter training data for rows where porcentaje_cambio is positive
+filtered_data = training_data[training_data['porcentaje_cambio'] > 0]
+
+# Convert the specified categorical columns in input_data to category
+for col in categorical_columns_to_compare:
+    if col in input_df.columns:
+        input_data[col] = input_df[col].astype('category')
+
+# Convert the specified categorical columns in training_data to category (if not already done)
+for col in categorical_columns_to_compare:
+    if col in training_data.columns:
+        training_data[col] = training_data[col].astype('category')
+
+# Set up a 3-column layout for plotting
+for i, col_name in enumerate(categorical_columns_to_compare):
+    # Create a new row with 3 columns for every three plots
+    if i % 3 == 0:
+        col1, col2, col3 = st.columns(3)
+    columns = [col1, col2, col3]
+    
+    # Create the plot
+    fig, ax = plt.subplots()
+    
+    # Plot the count plot for the filtered training data
+    sns.countplot(x=filtered_data[col_name], ax=ax, color="skyblue", label="Filtered Data")
+    
+    # Highlight the user's input as a separate bar
+    user_input_value = input_df[col_name].iloc[0]  # Safely get the first value
+    ax.bar(user_input_value, filtered_data[col_name].value_counts().get(user_input_value, 0), color='red', label='User Input')
+    
+    # Set title and labels
+    ax.set_title(f'Comparación de {col_name}')
+    ax.set_xlabel(col_name)
+    ax.legend()
+    
+    # Display each plot in the current column
+    columns[i % 3].pyplot(fig)
+
+
+
