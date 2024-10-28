@@ -5,6 +5,8 @@ import pandas as pd
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.backends.backend_pdf
+
 
 
 
@@ -117,6 +119,10 @@ if 'porcentaje_cambio' not in training_data.columns:
     training_data['porcentaje_cambio'] = np.nan  # Add as NaN if not prese
 print(training_data['porcentaje_cambio'].dtype)
 
+# Create a PDF file to save all plots
+pdf_path = "graphs_comparison.pdf"
+pdf = matplotlib.backends.backend_pdf.PdfPages(pdf_path)
+
 # Botón para hacer la predicción
 if st.button("Hacer Predicción"):
     # Debugging: Check input_df before prediction
@@ -140,8 +146,9 @@ if st.button("Hacer Predicción"):
             ax.set_title("Comparación de variacion entre el usuario y la otras empresas")
             ax.set_xlabel("porcentaje_cambio")
             ax.legend()
-            
             st.pyplot(fig)
+            pdf.savefig(fig)  # Save the figure to PDF
+            plt.close(fig)  # Close the figure to avoid display issues
         else:
             st.error("La columna 'porcentaje_cambio' no se encuentra en los datos de entrenamiento.")
     except Exception as e:
@@ -176,6 +183,8 @@ for i, col_name in enumerate(columns_to_compare):
     
     # Display each plot in the current column
     columns[i % 2].pyplot(fig)
+    pdf.savefig(fig)  # Save the figure to PDF
+    plt.close(fig) 
 
 # Define categorical columns to compare
 categorical_columns_to_compare = ['Bienes_Mejor_Emp', 'Metod_Nuev_Emp', 'Metod_Nuev_Prod', 'Metod_Nuev_Info', 'Metod_Nuev_Dist', 'Tec_Comerce_Nuev']
@@ -217,6 +226,16 @@ for i, col_name in enumerate(categorical_columns_to_compare):
     
     # Display each plot in the current column
     columns[i % 3].pyplot(fig)
+    pdf.savefig(fig)  # Save the figure to PDF
+    plt.close(fig) 
+
+
+# Close the PDF file
+pdf.close()
+
+# Provide a download button for the generated PDF
+with open(pdf_path, "rb") as file:
+    st.download_button(label="Descargar todos los gráficos", data=file, file_name="comparacion_graficos.pdf")
 
 
 
