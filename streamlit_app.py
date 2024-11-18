@@ -1,13 +1,13 @@
 import streamlit as st
+import matplotlib
+matplotlib.use("Agg")  
+import matplotlib.pyplot as plt
+import seaborn as sns
+import matplotlib.backends.backend_pdf
 import pickle
 import numpy as np
 import pandas as pd
 import os
-import seaborn as sns
-import matplotlib.backends.backend_pdf
-import matplotlib
-matplotlib.use("Agg")  
-import matplotlib.pyplot as plt
 
 
 # Título de la aplicación
