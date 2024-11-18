@@ -44,7 +44,7 @@ numerical_inputs = [
     ("Export_2019", "Pregunta 3: Exportaciones totales de la empresa en el año anterior (en miles de pesos)", 0),
     ("Ventas_Nacion20", "Pregunta 4: Utilidades totales en el mercado nacional del año anterior (en miles de pesos)", 0),
     ("Export_2020", "Pregunta 5: Exportaciones esperadas totales de la empresa en el año actual (en miles de pesos)", 0),
-    ("Bienes_Ctes", "Pregunta 6: Porcentaje de ventas nacionales esperadas de bienes o servicios que no cambiaran al año anterior (Valores entre 0 y 1)", 0.0, 0.0, 1.0),
+    ("Bienes_Ctes", "Pregunta 6: Relación de ventas nacionales esperadas de bienes o servicios que no cambiaran al año anterior (Si es 30% poner 0.3)", 0.0, 0.0, 1.0),
     ("Razon_No_Proy", "Pregunta 7: Razón principal por la cual no introdujo innovaciones", 1, 1, 12),
     ("Average_Cert_Employ19", "Pregunta 8: Empleados con certificaciones laborales de competencias laborales inherentes a la actividad(es) principal(es) que desarrolla la empresaen el año anterior", 0),
     ("Average_Cert_Employ20", "Pregunta 9: Empleados con certificaciones laborales de competencias laborales inherentes a la actividad(es) principal(es) que desarrolla la empresa en el año actual", 0)
@@ -100,7 +100,7 @@ categorical_questions_restricted = {
 # Definir preguntas categóricas sin restricciones
 categorical_inputs_unrestricted = {
     "Tipo": "Pregunta 28: Seleccione el tipo de empresa según el grado de innovación",
-    "Ventas_NacionTotal": "Pregunta 29: Porcentaje de ventas nacionales esperadas de bienes o servicios totales en el año actual"
+    "Ventas_NacionTotal": "Pregunta 29: Relación de ventas nacionales esperadas de bienes o servicios totales en el año actual (Si es 30% poner 0.3)"
 }
 
 
