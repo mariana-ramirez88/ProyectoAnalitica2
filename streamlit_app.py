@@ -3,9 +3,12 @@ import pickle
 import numpy as np
 import pandas as pd
 import os
-import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.backends.backend_pdf
+import matplotlib
+matplotlib.use("Agg")  
+import matplotlib.pyplot as plt
+
 
 # Título de la aplicación
 st.title("📈 Profit Pulse")
@@ -248,7 +251,11 @@ if st.button("Hacer Predicción"):
         
         # Highlight the user's input as a separate bar
         user_input_value = input_df[col_name].iloc[0]  # Safely get the first value
-        ax.bar(user_input_value, filtered_data[col_name].value_counts().get(user_input_value, 0), color='red', label='User Input')
+        if user_input_value is None:
+            st.warning("Invalid input provided for the bar chart.")
+        else:
+            ax.bar(user_input_value, filtered_data[col_name].value_counts().get(user_input_value, 0), color='red', label='User Input')
+
         
         # Set title and labels
         ax.set_title(f'Comparación de {col_name}')
