@@ -195,6 +195,7 @@ if st.button("Hacer Predicción"):
 
     # Plotting boxplot with user input as points
     st.header('Comparación de Usuario vs Distribución de la Base de Datos Original')
+    st.write("Las variables analizadas a continuación son las más influyentes para poder obtener un crecimiento económico. Con los gráficos generados usted podrá comparar como se encuentra en cada una de las áreas vs las empresas que ya cuentan con un crecimiento económico")
 
     # Iterate over each column to plot in a 2x2 layout
     for i, col_name in enumerate(columns_to_compare):
