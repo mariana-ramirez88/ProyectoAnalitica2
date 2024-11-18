@@ -7,9 +7,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.backends.backend_pdf
 
-
-
-
 # Título de la aplicación
 st.title("📈 Profit Pulse")
 st.write("Por favor, contesta las siguientes preguntas para obtener una predicción:")
@@ -39,15 +36,15 @@ num_cols = ['Activ_Econ', 'Ventas_Nacion19', 'Export_2019', 'Ventas_Nacion20',
 
 # Preguntas para los datos numéricos
 numerical_inputs = [
-    ("Activ_Econ", "1. Código de la actividad económica principal de la empresa según la clasificación internacional (CIIU)", 0),
-    ("Ventas_Nacion19", "2. Ingresos/ventas totales en el mercado nacional del año anterior (en miles de pesos)", 0),
-    ("Export_2019", "3. Exportaciones totales de la empresa en el año anterior (en miles de pesos)", 0),
-    ("Ventas_Nacion20", "4. Utilidades totales en el mercado nacional del año anterior (en miles de pesos)", 0),
-    ("Export_2020", "5. Exportaciones esperadas totales de la empresa en el año actual (en miles de pesos)", 0),
-    ("Bienes_Ctes", "6. Porcentaje de ventas nacionales esperadas de bienes o servicios que no cambiaran al año anterior (Valores entre 0 y 1)", 0.0, 0.0, 1.0),
-    ("Razon_No_Proy", "7. Razón principal por la cual no introdujo innovaciones", 1, 1, 12),
-    ("Average_Cert_Employ19", "8. Empleados con certificaciones laborales en el año anterior", 0),
-    ("Average_Cert_Employ20", "9. Empleados con certificaciones laborales en el año actual", 0)
+    ("Activ_Econ", "Pregunta 1: Código de la actividad económica principal de la empresa según la clasificación internacional (CIIU)", 0),
+    ("Ventas_Nacion19", "Pregunta 2: Ingresos/ventas totales en el mercado nacional del año anterior (en miles de pesos)", 0),
+    ("Export_2019", "Pregunta 3: Exportaciones totales de la empresa en el año anterior (en miles de pesos)", 0),
+    ("Ventas_Nacion20", "Pregunta 4: Utilidades totales en el mercado nacional del año anterior (en miles de pesos)", 0),
+    ("Export_2020", "Pregunta 5: Exportaciones esperadas totales de la empresa en el año actual (en miles de pesos)", 0),
+    ("Bienes_Ctes", "Pregunta 6: Porcentaje de ventas nacionales esperadas de bienes o servicios que no cambiaran al año anterior (Valores entre 0 y 1)", 0.0, 0.0, 1.0),
+    ("Razon_No_Proy", "Pregunta 7: Razón principal por la cual no introdujo innovaciones", 1, 1, 12),
+    ("Average_Cert_Employ19", "Pregunta 8: Empleados con certificaciones laborales de competencias laborales inherentes a la actividad(es) principal(es) que desarrolla la empresaen el año anterior", 0),
+    ("Average_Cert_Employ20", "Pregunta 9: Empleados con certificaciones laborales de competencias laborales inherentes a la actividad(es) principal(es) que desarrolla la empresa en el año actual", 0)
 ]
 
 # Opciones para la razón de no innovación
@@ -77,31 +74,32 @@ respuesta_map = {
 
 # Preguntas personalizadas para datos categóricos con restricciones de respuesta (Sí=1, No=2)
 categorical_questions_restricted = {
-    "Bienes_Nuev_Emp": "10. ¿Introdujo su empresa bienes o servicios nuevos que ya existían en el mercado nacional o internacional, pero eran nuevos para la empresa durante los 2 últimos años? (Sí=1, No=2)",
-    "Bienes_Nuev_Nacion": "11. ¿Introdujo su empresa bienes o servicios nuevos en el mercado nacional durante los 2 últimos años? (Sí=1, No=2)",
-    "Bienes_Nuev_Inter": "12. ¿Introdujo su empresa bienes o servicios nuevos en el mercado internacional durante los 2 últimos años? (Sí=1, No=2)",
-    "Bienes_Mejor_Emp": "13. ¿Introdujo su empresa mejoras a bienes o servicios que ya existían en el mercado, pero que fueron mejorados solo para la empresa durante los 2 últimos años? (Sí=1, No=2)",
-    "Bienes_Mejor_Nacion": "14. ¿Introdujo su empresa mejoras a bienes o servicios en el mercado nacional durante los 2 últimos años? (Sí=1, No=2)",
-    "Bienes_Mejor_Inter": "15. ¿Introdujo su empresa mejoras a bienes o servicios en el mercado internacional durante los 2 últimos años? (Sí=1, No=2)",
-    "Metod_Nuev_Prod": "16. ¿Introdujo su empresa métodos nuevos o mejorados de producción de bienes o prestación de servicios durante los 2 últimos años? (Sí=1, No=2)",
-    "Metod_Nuev_Emp": "17. ¿Implementó su empresa métodos organizativos nuevos o mejorados en su funcionamiento interno durante los 2 últimos años? (Sí=1, No=2)",
-    "Tec_Comerce_Nuev": "18. ¿Introdujo su empresa técnicas de comercialización nuevas o mejoradas durante los 2 últimos años? (Sí=1, No=2)",
-    "Metod_Nuev_Dist": "19. ¿Implementó su empresa métodos nuevos o mejorados de distribución, entrega o logística durante los 2 últimos años? (Sí=1, No=2)",
-    "Metod_Nuev_Info": "20. ¿Introdujo su empresa métodos nuevos o mejorados de procesamiento de información o comunicación durante los 2 últimos años? (Sí=1, No=2)",
-    "Metod_Nuev_Conta": "21. ¿Introdujo su empresa métodos nuevos o mejorados para la contabilidad u operaciones administrativas durante los 2 últimos años? (Sí=1, No=2)",
-    "Proy_Bienes_Nuev": "22. ¿Tenía su empresa algún proyecto en marcha para introducir bienes o servicios nuevos o mejorados al finalizar los 2 últimos años? (Sí=1, No=2)",
-    "Abandono_Proy": "23. ¿Abandonó su empresa algún proyecto de innovación durante los 2 últimos años? (Sí=1, No=2)",
-    "Intencion_Proy": "24. ¿Tuvo su empresa la intención de realizar algún proyecto de innovación durante los 2 últimos años? (Sí=1, No=2)",
-    "Cert_Quali_Process": "25. ¿Obtuvo su empresa certificaciones de calidad de procesos durante los 2 últimos años? (Sí=1, No=2)",
-    "Cert_Quali_Product": "26. ¿Obtuvo su empresa certificaciones de calidad de productos durante los 2 últimos años? (Sí=1, No=2)",
-    "Reglamento": "27. ¿Estuvieron los bienes o servicios de su empresa sujetos a reglamentos técnicos durante los 2 últimos años? (Sí=1, No=2)"
+    "Bienes_Nuev_Emp": "Pregunta 10: ¿Introdujo su empresa bienes o servicios nuevos que ya existían en el mercado nacional o internacional, pero eran nuevos para la empresa durante los 2 últimos años? (Sí=1, No=2)",
+    "Bienes_Nuev_Nacion": "Pregunta 11: ¿Introdujo su empresa bienes o servicios nuevos en el mercado nacional durante los 2 últimos años? (Sí=1, No=2)",
+    "Bienes_Nuev_Inter": "Pregunta 12: ¿Introdujo su empresa bienes o servicios nuevos en el mercado internacional durante los 2 últimos años? (Sí=1, No=2)",
+    "Bienes_Mejor_Emp": "Pregunta 13: ¿Introdujo su empresa mejoras a bienes o servicios que ya existían en el mercado, pero que fueron mejorados solo para la empresa durante los 2 últimos años? (Sí=1, No=2)",
+    "Bienes_Mejor_Nacion": "Pregunta 14: ¿Introdujo su empresa mejoras a bienes o servicios en el mercado nacional durante los 2 últimos años? (Sí=1, No=2)",
+    "Bienes_Mejor_Inter": "Pregunta 15: ¿Introdujo su empresa mejoras a bienes o servicios en el mercado internacional durante los 2 últimos años? (Sí=1, No=2)",
+    "Metod_Nuev_Prod": "Pregunta 16: ¿Introdujo su empresa métodos nuevos o mejorados de producción de bienes o prestación de servicios durante los 2 últimos años? (Sí=1, No=2)",
+    "Metod_Nuev_Emp": "Pregunta 17: ¿Implementó su empresa métodos organizativos nuevos o mejorados en su funcionamiento interno durante los 2 últimos años? (Sí=1, No=2)",
+    "Tec_Comerce_Nuev": "Pregunta 18: ¿Introdujo su empresa técnicas de comercialización nuevas o mejoradas durante los 2 últimos años? (Sí=1, No=2)",
+    "Metod_Nuev_Dist": "Pregunta 19: ¿Implementó su empresa métodos nuevos o mejorados de distribución, entrega o logística durante los 2 últimos años? (Sí=1, No=2)",
+    "Metod_Nuev_Info": "Pregunta 20: ¿Introdujo su empresa métodos nuevos o mejorados de procesamiento de información o comunicación durante los 2 últimos años? (Sí=1, No=2)",
+    "Metod_Nuev_Conta": "Pregunta 21: ¿Introdujo su empresa métodos nuevos o mejorados para la contabilidad u operaciones administrativas durante los 2 últimos años? (Sí=1, No=2)",
+    "Proy_Bienes_Nuev": "Pregunta 22: ¿Tenía su empresa algún proyecto en marcha para introducir bienes o servicios nuevos o mejorados al finalizar los 2 últimos años? (Sí=1, No=2)",
+    "Abandono_Proy": "Pregunta 23: ¿Abandonó su empresa algún proyecto de innovación durante los 2 últimos años? (Sí=1, No=2)",
+    "Intencion_Proy": "Pregunta 24: ¿Tuvo su empresa la intención de realizar algún proyecto de innovación durante los 2 últimos años? (Sí=1, No=2)",
+    "Cert_Quali_Process": "Pregunta 25: ¿Obtuvo su empresa certificaciones de calidad de procesos durante los 2 últimos años? (Sí=1, No=2)",
+    "Cert_Quali_Product": "Pregunta 26: ¿Obtuvo su empresa certificaciones de calidad de productos durante los 2 últimos años? (Sí=1, No=2)",
+    "Reglamento": "Pregunta 27: ¿Estuvieron los bienes o servicios de su empresa sujetos a reglamentos técnicos durante los 2 últimos años? (Sí=1, No=2)"
 }
 
 # Definir preguntas categóricas sin restricciones
 categorical_inputs_unrestricted = {
-    "Tipo": "28. Seleccione el tipo de empresa según el grado de innovación",
-    "Ventas_NacionTotal": "29. Porcentaje de ventas nacionales esperadas de bienes o servicios totales en el año actual"
+    "Tipo": "Pregunta 28: Seleccione el tipo de empresa según el grado de innovación",
+    "Ventas_NacionTotal": "Pregunta 29: Porcentaje de ventas nacionales esperadas de bienes o servicios totales en el año actual"
 }
+
 
 # Función para obtener entradas numéricas
 def get_numerical_input():
@@ -139,12 +137,11 @@ def get_categorical_input_unrestricted():
     
     return data
 
-
-
 # Obtener entradas del usuario
 numerical_data = get_numerical_input()
 categorical_data_restricted = get_categorical_input_restricted()
 categorical_data_unrestricted = get_categorical_input_unrestricted()
+
 
 # Concatenar todos los datos
 input_data = {**numerical_data, **categorical_data_restricted, **categorical_data_unrestricted}
